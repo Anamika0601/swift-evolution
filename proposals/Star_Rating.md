@@ -92,6 +92,7 @@ Creates a Rating View that displays a star rating with default maximum rating to
 Creates a Rating View that displays a star Rating View with a custom label and user specified maximum rating as shown in example above.
 
 ```init<S>(_ title: S, rating: Binding<Int>, unselectedImage: Image?, selectedImage: Image?,  unselectedColor : Color , selectedColor : Color) where S : StringProtocol```
+
 This is an elaborate API which provids the user maximum flexibility in desiging the UI of the Rating View. It allows user to define custom image and colors for selected and unselected state.
 
 ### Implementation of init methods
