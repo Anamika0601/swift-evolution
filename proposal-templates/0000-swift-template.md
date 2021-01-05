@@ -1,7 +1,7 @@
-# Feature name
+# Add SwiftUI Component : Star Rater View
 
 * Proposal: [SE-NNNN](NNNN-filename.md)
-* Authors: [Author 1](https://github.com/swiftdev), [Author 2](https://github.com/swiftdev)
+* Authors: Anamika Sharma
 * Review Manager: TBD
 * Status: **Awaiting implementation**
 
@@ -15,88 +15,168 @@
 
 ## Introduction
 
-A short description of what the feature is. Try to keep it to a
-single-paragraph "elevator pitch" so the reader understands what
-problem this proposal is addressing.
-
-Swift-evolution thread: [Discussion thread topic for that proposal](https://forums.swift.org/)
+Add a SwiftUI API that allows user to design a star rating UI. 
 
 ## Motivation
 
-Describe the problems that this proposal seeks to address. If the
-problem is that some common pattern is currently hard to express, show
-how one can currently get a similar effect and describe its
-drawbacks. If it's completely new functionality that cannot be
-emulated, motivate why this new functionality would help Swift
-developers create better Swift code.
+At the moment, we do not have any SwiftUI API to generate a rater view which would allow user to rate a review, text or their experience. We propose a solution that creates a list of subviews of image with each star tagged to a rating number.
+
+This new API will allow users to design the rating view easily by just setting the properties. 
 
 ## Proposed solution
+We can create Rating View by providing rating binding, a label, and the max rating. Set the ```rating``` parameter to a state property that provides the value to display as the current rating. Set the label to a view that visually describes the purpose of Rating View.
+The customizable properties here mean that:
 
-Describe your solution to the problem. Provide examples and describe
-how they work. Show how your solution is better than current
-workarounds: is it cleaner, safer, or more efficient?
+* The label should be places before the rating , default  is an empty string
+* The maximum integer rating is 5
+* The selected and unselected colors signify the states (selected or not) of the star. [Default : yellow for selected and gray for unselected]
+* The selected and unselected image, means the images to use when the star if highlighted/selected or not. [Default :selected is a star filled and unselcted is nil image.]
+
+The following example shows a Rating View that displays star rater, a local state variable ```rating``` , to set the control's rating given by user. The default rating ranges from 1 to 5. When the user clicks or taps on a star, we would also select all the star prior to the selected rating as well.
+
+```
+struct ContentView: View {
+    @State private var rating = 4
+    
+    var body: some View {
+        NavigationView {
+            Section {
+                VStack{
+                    RatingView(
+                     "Current rating \(rating)",
+                      rating: $rating,
+                      maxRating: 8
+                    )
+                    .padding(10)
+                }  
+            }.navigationBarTitle("Swift UI Rater")
+        }
+    }
+}
+
+```
 
 ## Detailed design
 
-Describe the design of the solution in detail. If it involves new
-syntax in the language, show the additions and changes to the Swift
-grammar. If it's a new API, show the full API and its documentation
-comments detailing what it does. The detail in this section should be
-sufficient for someone who is *not* one of the authors to be able to
-reasonably implement the feature.
+This section contains the design of the Rating View. 
 
-## Source compatibility
+### Declaration
 
-Relative to the Swift 3 evolution process, the source compatibility
-requirements for Swift 4 are *much* more stringent: we should only
-break source compatibility if the Swift 3 constructs were actively
-harmful in some way, the volume of affected Swift 3 code is relatively
-small, and we can provide source compatibility (in Swift 3
-compatibility mode) and migration.
+```
+struct RatingView: View{
+    @Binding var rating: Int
+    
+    var titleText : String?
+    var maxRating  = 5
+    var unselectedImage : Image?
+    var selectedImage = Image(systemName: "star.fill")
+    
+    var unselectedColor = Color.gray
+    var selectedColor = Color.yellow
+}
+```
 
-Will existing correct Swift 3 or Swift 4 applications stop compiling
-due to this change? Will applications still compile but produce
-different behavior than they used to? If "yes" to either of these, is
-it possible for the Swift 4 compiler to accept the old syntax in its
-Swift 3 compatibility mode? Is it possible to automatically migrate
-from the old syntax to the new syntax? Can Swift applications be
-written in a common subset that works both with Swift 3 and Swift 4 to
-aid in migration?
+### Creating Rating View
 
-## Effect on ABI stability
+```init(rating:Binding<Int>)```
 
-Does the proposal change the ABI of existing language features? The
-ABI comprises all aspects of the code generation model and interaction
-with the Swift runtime, including such things as calling conventions,
-the layout of data types, and the behavior of dynamic features in the
-language (reflection, dynamic dispatch, dynamic casting via `as?`,
-etc.). Purely syntactic changes rarely change existing ABI. Additive
-features may extend the ABI but, unless they extend some fundamental
-runtime behavior (such as the aforementioned dynamic features), they
-won't change the existing ABI.
+Creates a Rating View that displays a star rating with default maximum rating to 5.
 
-Features that don't change the existing ABI are considered out of
-scope for [Swift 4 stage 1](README.md). However, additive features
-that would reshape the standard library in a way that changes its ABI,
-such as [where clauses for associated
-types](https://github.com/apple/swift-evolution/blob/master/proposals/0142-associated-types-constraints.md),
-can be in scope. If this proposal could be used to improve the
-standard library in ways that would affect its ABI, describe them
-here.
 
-## Effect on API resilience
+```init<S>(_ title: S, rating: Binding<Int>, maxRating: Int) where S : StringProtocol```
 
-API resilience describes the changes one can make to a public API
-without breaking its ABI. Does this proposal introduce features that
-would become part of a public API? If so, what kinds of changes can be
-made without breaking ABI? Can this feature be added/removed without
-breaking ABI? For more information about the resilience model, see the
-[library evolution
-document](https://github.com/apple/swift/blob/master/docs/LibraryEvolution.rst)
-in the Swift repository.
+Creates a Rating View that displays a star Rating View with a custom label and user specified maximum rating as shown in example above.
 
-## Alternatives considered
+```init<S>(_ title: S, rating: Binding<Int>, unselectedImage: Image?, selectedImage: Image?,  unselectedColor : Color , selectedColor : Color) where S : StringProtocol```
 
-Describe alternative approaches to addressing the same problem, and
-why you chose this approach instead.
+This is an elaborate API which provids the user maximum flexibility in desiging the UI of the Rating View. It allows user to define custom image and colors for selected and unselected state.
+
+### Implementation of init methods
+
+```
+init(rating:Binding<Int>){
+    self._rating = rating
+}
+```
+``` 
+init<S>(_ title: S, rating: Binding<Int>, maxRating: Int) where S : StringProtocol {
+    self.titleText = title as? String
+    self._rating = rating
+    self.maxRating = maxRating
+}
+```
+``` 
+init<S>(_ title: S, rating: Binding<Int>, unselectedImage: Image?, selectedImage: Image?,  unselectedColor : Color , selectedColor : Color) where S : StringProtocol{
+    self.titleText = title as? String
+    self._rating = rating
+    if let image = selectedImage {
+        self.selectedImage = image
+    }
+    if let image = unselectedImage {
+        self.unselectedImage = image
+    }
+    self.selectedColor = selectedColor
+    self.unselectedColor = unselectedColor
+}
+
+```
+### Implementation of Rating View 
+The body of the Rating View is HStack with label and maximum stars or any other image provided by user. The way we show the image of each rating is: 
+
+* If the rating tapped by user is less than or equal to the current rating, then return the selected image. 
+* If the rating tapped by user is greater than the current rating, return the unseleccted image if it was set, otherwise return the selected Image.
+
+Mentioned in the ```private func image(for number:Int) -> Image```
+
+```
+var body: some View {
+    if let label = titleText {
+        Text(label).padding(10)
+    }
+    HStack{
+        ForEach(1..<maxRating+1){
+            number in self.image(for: number).foregroundColor(number > self.rating ? self.unselectedColor : self.selectedColor)
+                .onTapGesture {
+                    self.rating = number
+                }
+        }
+    }
+
+}
+
+private func image(for number:Int) -> Image {
+    if number > rating {
+        return unselectedImage  ?? selectedImage
+    }else{
+        return selectedImage
+    }
+}
+```
+
+## Availability
+iOS 13.0+, 
+macOS 10.15+, 
+tvOS 13.0+, 
+watchOS 6.0+
+
+## Effect Access Control Modifiers
+
+All the access view modifiers are applicable mentioned in [Access Control Modifiers](https://developer.apple.com/documentation/swiftui/stepper-view-modifiers)
+with deprecated modifiers as 
+
+``` func accessibility(selectionIdentifier: AnyHashable) -> ModifiedContent<RatingView<Label>, AccessibilityAttachmentModifier>```
+
+Sets a selection identifier for this view’s accessibility element.
+  
+&
+
+``` frame()```
+
+Positions the view in an invisible frame
+
+## Future Evolution
+
+Currently, the stars are binded to intger ratings. Possibly in future we can add star updating half and also in decimal points. 
+We can also use sliders to update the star ratings in decimal points.
+
 
