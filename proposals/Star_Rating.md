@@ -27,16 +27,16 @@ This new API will allow users to design the rating view easily by just setting t
 We create Rating View by providing rating binding, a label, and the max rating. 
 
 * The ```rating``` is an integer parameter that stores the current rating. Set the ```rating``` parameter to a state property that provides the value to display as the current rating. 
-* The ```label``` is a custom text message that visually describes the purpose of Rating View.
+* The ```label``` is a custom text message that visually describes the purpose of Rater.
 
-We allow users to customize the rating view through various properties to add more flexibility. The customizable properties here mean that:
+We allow users to customize the Rater through various properties to add more flexibility. The customizable properties here mean that:
 
 * Label : The label should be placed before the rating , default  is an empty string
 * Maximum integer rating: The maximum rating the user is allowed to tap. [Default is 5 and minimum is 1]
 * The selected and unselected colors signify the states (selected or not) of the star. [Default : yellow for selected and gray for unselected]
 * The selected and unselected image, means the images to use when the star if highlighted/selected or not. [Default :selected is a star filled and unselcted is nil image.]
 
-The following example shows a Rating View that displays star rater, a local state variable ```rating``` , to set the control's rating given by user. The default rating ranges from 1 to 5.
+The following example shows a Rater that displays star rater, a local state variable ```rating``` , to set the control's rating given by user, the maximum rating that is allowed and a custom label that describes the rater. The default rating ranges from 1 to 5.
 
 ```
 struct ContentView: View {
@@ -46,7 +46,7 @@ struct ContentView: View {
         NavigationView {
             Section {
                 VStack{
-                    RatingView(
+                    Rater(
                      "Current rating \(rating)",
                       rating: $rating,
                       maxRating: 8
@@ -62,12 +62,12 @@ struct ContentView: View {
 
 ## Detailed design
 
-This section contains the design of the Rating View. 
+This section contains the design of the Rater. 
 
 ### Declaration
 
 ```
-struct RatingView: View{
+struct Rater: View{
     @Binding var rating: Int
     
     var titleText : String?
@@ -80,20 +80,21 @@ struct RatingView: View{
 }
 ```
 
-### Creating Rating View
+### Creating Rater
 
 ```init(rating:Binding<Int>)```
 
-Creates a Rating View that displays a star rating with default maximum rating to 5.
+Creates a Rater that displays a star rating with default maximum rating to 5.
 
 
 ```init<S>(_ title: S, rating: Binding<Int>, maxRating: Int) where S : StringProtocol```
 
-Creates a Rating View that displays a star Rating View with a custom label and user specified maximum rating as shown in example above.
+Creates a Rater that displays a star Rater with a custom label and user specified maximum rating as shown in example above.
 
 ```init<S>(_ title: S, rating: Binding<Int>, unselectedImage: Image?, selectedImage: Image?,  unselectedColor : Color , selectedColor : Color) where S : StringProtocol```
 
-This is an elaborate API which provids the user maximum flexibility in desiging the UI of the Rating View. It allows user to define custom image and colors for selected and unselected state.
+This is an elaborate API which provids the user maximum flexibility in desiging the UI of the Rater. It allows user to define custom image and colors for selected and unselected state.
+
 
 ### Implementation of init methods
 
@@ -124,8 +125,8 @@ init<S>(_ title: S, rating: Binding<Int>, unselectedImage: Image?, selectedImage
 }
 
 ```
-### Implementation of Rating View 
-The body of the Rating View is HStack with label and maximum stars or any other image provided by user. The way we show the image of each rating is: 
+### Implementation of Rater
+The body of the Rater is HStack with label and maximum stars or any other image provided by user. The way we show the image of each rating is: 
 
 * If the rating tapped by user is less than or equal to the current rating, then return the selected image. 
 * If the rating tapped by user is greater than the current rating, return the unselected image if it was set, otherwise return the selected Image.
@@ -169,7 +170,7 @@ All the access view modifiers are applicable mentioned in [Access Control Modifi
 
 Below are the deprecated modifiers: 
 
-1. ``` func accessibility(selectionIdentifier: AnyHashable) -> ModifiedContent<RatingView<Label>, AccessibilityAttachmentModifier>```
+1. ``` func accessibility(selectionIdentifier: AnyHashable) -> ModifiedContent<Rater<Label>, AccessibilityAttachmentModifier>```
 
 Sets a selection identifier for this view’s accessibility element.
 
