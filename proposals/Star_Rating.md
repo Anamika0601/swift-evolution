@@ -179,6 +179,6 @@ Positions the view in an invisible frame
 
 ## Future Evolution
 
-Currently, the stars are binded to intger ratings. Possibly in future we can add star updating half and also in decimal points. 
+Currently, the stars are binded to integer ratings. Possibly in future we can add star updating half and also in decimal points. 
 We can also use sliders to update the star ratings in decimal points.
 
