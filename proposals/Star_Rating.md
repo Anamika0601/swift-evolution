@@ -165,14 +165,15 @@ watchOS 6.0+
 
 ## Effect Access Control Modifiers
 
-All the access view modifiers are applicable mentioned in [Access Control Modifiers](https://developer.apple.com/documentation/swiftui/stepper-view-modifiers)
-with deprecated modifiers as 
+All the access view modifiers are applicable mentioned in [Access Control Modifiers](https://developer.apple.com/documentation/swiftui/stepper-view-modifiers) 
 
-``` func accessibility(selectionIdentifier: AnyHashable) -> ModifiedContent<RatingView<Label>, AccessibilityAttachmentModifier>```
+Below are the deprecated modifiers: 
+
+1. ``` func accessibility(selectionIdentifier: AnyHashable) -> ModifiedContent<RatingView<Label>, AccessibilityAttachmentModifier>```
 
 Sets a selection identifier for this view’s accessibility element.
 
-``` frame()```
+2. ``` frame()```
 
 Positions the view in an invisible frame
 
